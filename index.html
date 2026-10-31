@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CRM Rescina Service</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef2f7;--card:#fff;--tx:#16202c;--mu:#667588;--bd:#e1e7ef;--ac:#0f766e;--acx:#fff;--wa:#d97706;--er:#dc2626;--bl:#2563eb;--gr:linear-gradient(135deg,#0058a9,#1d78d6)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1620;--card:#182230;--tx:#e8eef6;--mu:#93a3b8;--bd:#263447;--ac:#2dd4bf;--acx:#06201d;--wa:#fbbf24;--er:#f87171;--bl:#60a5fa}}
+:root[data-theme="dark"]{--bg:#0f1620;--card:#182230;--tx:#e8eef6;--mu:#93a3b8;--bd:#263447;--ac:#2dd4bf;--acx:#06201d;--wa:#fbbf24;--er:#f87171;--bl:#60a5fa}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;padding:14px 16px;border-radius:14px;background:#0058a9;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+h1{font-size:18px;margin:0}
+.badge{font-size:12px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.22);color:#fff}
+header .btn{background:rgba(255,255,255,.2);color:#fff;border:0}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:3px}
+button,input,select,textarea{font:inherit;color:inherit}
+.tab{padding:8px 14px;border:0;background:var(--card);border-radius:99px;white-space:nowrap;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tab.on{background:var(--gr);color:#fff;font-weight:600}
+.btn{padding:8px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);cursor:pointer}
+.btn.p{background:var(--gr);color:#fff;border:0;font-weight:600;box-shadow:0 3px 10px rgba(37,99,235,.25)}
+.btn.s{padding:6px 11px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--bd);border-radius:12px;padding:13px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.k_nuova{border-left-color:var(--er)}.k_lavorazione{border-left-color:var(--bl)}.k_conclusa{border-left-color:var(--ac)}
+.k_urg{border-left-color:var(--er);background:linear-gradient(90deg,rgba(220,38,38,.12),transparent 65%),var(--card)}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.mu{color:var(--mu);font-size:13px}
+.st{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;color:#fff;white-space:nowrap}
+.st.nuova{background:var(--er);color:#fff}.st.lavorazione{background:var(--bl);color:#fff}.st.conclusa{background:var(--ac);color:var(--acx)}
+.st.u_massima{background:var(--er);color:#fff}.st.u_media{background:rgba(217,119,6,.16);color:var(--wa)}.st.u_minima{background:var(--bd);color:var(--mu)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.unp{color:var(--er);font-weight:700}
+.btn.d{background:var(--er);color:#fff;border-color:var(--er)}
+.fold{display:block;width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit;border-left-color:var(--ac)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:99;max-width:90vw}
+.alert{position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top,0px));background:var(--er);color:#fff;padding:12px 14px;border-radius:10px;z-index:100;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);width:min(94vw,460px);padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+label{display:block;font-size:13px;color:var(--mu);margin-top:8px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg)}
+input[type=checkbox]{width:auto}
+.empty{text-align:center;color:var(--mu);padding:30px 10px}
+.hl{display:flex;align-items:center;gap:10px}.logo{height:46px;width:auto;border-radius:6px}
+header h1{color:#ffd400;font-size:17px;letter-spacing:.5px}
+.badge{background:#ffd400;color:#0b3a73;font-weight:600}
+.foot{text-align:center;margin:22px 0 8px;color:var(--mu);font-size:12px}.foot img{height:22px;vertical-align:middle;margin-right:6px;border-radius:4px}
+.lg-c{height:56px;display:block;margin:0 auto 10px;border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.chip{display:inline-flex;align-items:center;gap:6px;margin:0;padding:6px 10px;border:1px solid var(--bd);border-radius:99px;background:var(--bg);color:var(--tx);font-size:13px}
+#f_urg{border:2px solid var(--er);background:rgba(220,38,38,.1);color:var(--er);font-weight:700}
+.nov{background:var(--er);color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap}
+</style></head><body><main>
+<header><div class="hl"><img class="lg logo" alt="Rescina Service"><h1>CRM</h1></div><div><button class="btn s" id="out">Esci</button> <span class="badge" id="who"></span></div></header>
+<div id="app"><div class="empty">Caricamento…</div></div>
+<div class="foot"><img class="lg" alt="">Rescina Service · Noicattaro</div>
+<dialog id="dlg"></dialog>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,doc,addDoc,setDoc,updateDoc,deleteDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// ====== DA COMPILARE ======
+const firebaseConfig={apiKey:"AIzaSyDJ1gijZSBq0IHwQTYVFdSyBntbVm9uweo",authDomain:"crm-rescina.firebaseapp.com",projectId:"crm-rescina",storageBucket:"crm-rescina.firebasestorage.app",messagingSenderId:"195057031427",appId:"1:195057031427:web:89ff01509e17368644f136"};
+const ADMIN_CODE="555"; // codice per entrare come amministratore (puoi cambiarlo)
+// ==========================
+const LOGO='data:image/png;base64,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';
+document.querySelectorAll('img.lg').forEach(i=>i.src=LOGO);
+const S={me:null,admin:false,collabs:[],schede:[],myName:'',tab:'mie',folder:null,utenti:[]};
+let db,auth,fs;
+const $=s=>document.querySelector(s);
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3500)}
+let pend='';const cf=(a,id)=>pend===a+id;
+const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const now=()=>new Date().toISOString();
+const ft=d=>!d?'–':(d.length>10?new Date(d).toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):fd(d));
+const hist=(id,ev)=>[...((get(id)||{}).storico||[]),{ev,ts:now(),by:myId()}];
+function histo(s){const l=s.storico&&s.storico.length?s.storico:[s.creata&&{ev:'Creata',ts:s.creata},s.dLavorazione&&{ev:'Messa in lavorazione',ts:s.dLavorazione},s.dConclusione&&{ev:'Conclusa',ts:s.dConclusione}].filter(Boolean);
+return `<details open style="margin-top:4px"><summary class="mu">Cronologia (${l.length})</summary>${l.map(x=>`<div class="mu">• ${ft(x.ts)} — ${esc(x.ev)}${x.by&&nm(x.by)?' ('+esc(nm(x.by))+')':''}</div>`).join('')}</details>`}
+const fd=d=>d?new Date(d+'T12:00:00').toLocaleDateString('it-IT'):'–';
+const nm=id=>id==='admin'?'':((S.collabs.find(c=>c.id===id)||{}).nome||'Collaboratore');
+const myC=()=>S.collabs.find(c=>c.uid&&c.uid===S.me);
+const myId=()=>S.admin?'admin':(myC()?myC().id:null);
+function mine(){return (S.admin?S.schede:S.schede.filter(s=>s.collab===myId())).filter(s=>!s.eliminata)}
+let AC=null,seen=null,snd=true;
+try{snd=localStorage.getItem('snd')!=='0'}catch(e){}
+function unlock(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+document.addEventListener('pointerdown',unlock);
+function beep(){if(!snd||!AC)return;try{[0,.25,.5].forEach(t=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=880;g.gain.value=.2;o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+.15)});if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}}
+function popup(s){const d=document.createElement('div');d.className='alert';d.dataset.id=s.id;d.textContent='🔴 URGENTE: '+s.cliente+' — '+s.lavoro+(nm(s.collab)?' ('+nm(s.collab)+')':'');d.onclick=()=>d.remove();document.body.appendChild(d);setTimeout(()=>d.remove(),8000)}
+function checkUrgent(){const u=urgent();document.querySelectorAll('.alert').forEach(d=>{if(!u.some(s=>s.id===d.dataset.id))d.remove()});if(seen===null){seen=new Set(u.map(s=>s.id));return}
+  seen=new Set([...seen].filter(id=>u.some(s=>s.id===id)));
+  u.forEach(s=>{if(seen.has(s.id))return;seen.add(s.id);const last=(s.storico||[]).slice(-1)[0];if(last&&last.by===myId())return;if(S.admin||s.collab===myId())popup(s)})}
+function urgent(){return S.schede.filter(s=>!s.eliminata&&s.urg==='massima'&&s.stato==='nuova')}
+const isUnp=s=>!!s&&s.stato==='conclusa'&&s.esito==='positivo'&&!s.pagato;
+function unpaid(){return S.schede.filter(s=>s.stato==='conclusa'&&s.esito==='positivo'&&!s.pagato)}
+
+function render(){
+  if(!gateOK){showGate();return}
+  {const w=S.admin?'':(myC()?myC().nome:'Ospite');$('#who').textContent=w;$('#who').style.display=w?'':'none'}
+  if(!S.admin&&!myC()){
+    const free=S.collabs.filter(c=>!c.uid);
+    $('#app').innerHTML='<div class="card"><img class="lg lg-c" src="'+LOGO+'" alt=""><b>Chi sei?</b><p class="mu">Scegli il tuo nome dalla lista creata dall\'amministratore.</p>'+(free.length?free.map(c=>`<button class="btn" style="margin:0 6px 6px 0" data-act="claim" data-id="${c.id}">${esc(c.nome)}</button>`).join(''):'<div class="mu">Nessun nome disponibile: chiedi all\'amministratore di aggiungerti.</div>')+'<div class="acts" style="margin-top:12px"><button class="btn s" data-act="adm">Sono l\'amministratore</button></div></div>';
+    return;
+  }
+  const tabs=[['mie',(S.admin?'Cartelle':'La mia cartella')+novB()],['tipi','Per tipo'],['urg',(urgent().length?'🔴 ':'')+'Urgenze ('+urgent().length+')'],['unp','Non pagati ('+unpaid().length+')']];
+  if(S.admin)tabs.push(['team','Collaboratori']);
+  let h='<div class="tabs">'+tabs.map(t=>`<button class="tab ${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')+'</div>';
+  if(S.tab!=='team')h+='<div class="acts" style="margin:0 0 12px"><button class="btn p" data-act="new">+ Nuova scheda</button><button class="btn" data-act="exp" data-id="all">⬇ Esporta tutto</button></div>';
+  if(S.tab==='mie'){
+    const list=f=>S.schede.filter(s=>!s.eliminata&&(f==='?'?!S.collabs.some(c=>c.id===s.collab):s.collab===f)).sort((a,b)=>(b.creata||'').localeCompare(a.creata||''));
+    const F=S.admin?S.folder:myId();
+    const fn=f=>f==='?'?'Non assegnate':nm(f);
+    if(!F){
+      const fl=S.collabs.map(c=>c.id);if(list('?').length)fl.push('?');
+      h+=fl.map(f=>{const l=list(f);const w=l.filter(s=>s.stato==='lavorazione').length;return `<button class="card fold" data-act="open" data-id="${f}"><div class="row"><b>📁 ${esc(fn(f))}${l.some(isNov)?' <span class="nov">NOVITÀ</span>':''}</b><span class="mu">${cnt(l.filter(s=>s.stato==='nuova').length,'var(--er)')} da svolgere · ${cnt(w,'var(--bl)')} in lavorazione · ${cnt(l.filter(s=>s.stato==='conclusa').length,'var(--ac)')} concluse${l.some(s=>s.urg==='massima'&&s.stato==='nuova')?' · 🔴 '+l.filter(s=>s.urg==='massima'&&s.stato==='nuova').length:''}</span></div></button>`}).join('');
+    }else{
+      const l=list(F);
+      h+=`<div class="row" style="margin-bottom:10px"><b>📁 ${esc(fn(F))}</b>${S.admin?'<button class="btn s" data-act="open" data-id="">← Cartelle</button>':''}</div>`;
+      const ur=l.filter(s=>s.urg==='massima'&&s.stato==='nuova'),op=l.filter(s=>s.stato!=='conclusa'&&!(s.urg==='massima'&&s.stato==='nuova')),dn=l.filter(s=>s.stato==='conclusa');
+      if(!l.length)h+='<div class="empty">Cartella vuota.</div>';
+      if(ur.length)h+='<div class="mu" style="margin:6px 0 8px"><b style="color:var(--er)">🔴 Urgenti ('+ur.length+')</b></div>'+ur.map(card).join('');
+      if(op.length)h+='<div class="mu" style="margin:6px 0 8px"><b style="color:var(--bl)">In corso ('+op.length+')</b></div>'+op.map(card).join('');
+      if(dn.length)h+='<div class="mu" style="margin:14px 0 8px"><b style="color:var(--ac)">✔ Concluse ('+dn.length+')</b></div>'+dn.map(card).join('');
+    }
+  }else if(S.tab==='tipi'){
+    const vis=visAll();
+    if(!S.tf){
+      h+=TIPI.map(t=>{const l=vis.filter(s=>inT(s,t));const n=l.filter(s=>s.stato==='nuova').length,w=l.filter(s=>s.stato==='lavorazione').length,c=l.filter(s=>s.stato==='conclusa').length;
+        return `<button class="card fold" data-act="opent" data-id="${t}"><div class="row"><b>📁 ${t}${l.some(isNov)?' <span class="nov">NOVITÀ</span>':''}</b><span class="mu">${cnt(n,'var(--er)')} da svolgere · ${cnt(w,'var(--bl)')} in lavorazione · ${cnt(c,'var(--ac)')} concluse</span></div></button>`}).join('');
+    }else{
+      const l=tfList(),dk=S.dk||'dLavoro';
+      h+=`<div class="row" style="margin-bottom:10px"><b>📁 ${esc(S.tf)}</b><button class="btn s" data-act="opent" data-id="">← Cartelle</button></div>
+      <div class="card"><div class="row"><div style="flex:1"><label style="margin:0">Dal</label><input type="date" id="fd1" value="${esc(S.d1||'')}"></div><div style="flex:1"><label style="margin:0">Al</label><input type="date" id="fd2" value="${esc(S.d2||'')}"></div></div>
+      <label>Cerca per</label><select id="fdk"><option value="dLavoro" ${dk==='dLavoro'?'selected':''}>Data del lavoro</option><option value="creata" ${dk==='creata'?'selected':''}>Data di creazione</option></select>
+      <div class="acts"><button class="btn s" data-act="fclr">Azzera filtro</button><button class="btn s" data-act="exp" data-id="tf">⬇ Esporta (${l.length})</button></div></div>`+(l.length?folderBody(l):'<div class="empty">Nessuna scheda.</div>');
+    }
+  }else if(S.tab==='urg'){
+    const l=urgent();
+    h+='<p class="mu">Urgenze massime di tutto il team, ancora da prendere in carico.</p>';
+    h+=l.length?l.map(s=>(S.admin||s.collab===myId())?card(s):`<div class="card"><div class="row"><b>${esc(s.cliente)}</b><span class="st u_massima">URGENZA MASSIMA</span></div><div class="mu">${esc(s.lavoro)} · ${esc(nm(s.collab)||'Non assegnata')} · lavoro del ${fd(s.dLavoro)}</div>${s.tel?`<div class="mu">Tel. ${esc(s.tel)}</div>`:''}</div>`).join(''):'<div class="empty">Nessuna urgenza massima.</div>';
+  }else if(S.tab==='unp'){
+    const l=unpaid();
+    h+='<p class="mu">Elenco condiviso con tutti: clienti che non hanno ancora pagato.</p>';
+    h+=l.length?l.map(s=>`<div class="card"><div class="row"><b>${esc(s.cliente)}</b><span class="unp">€ ${esc(s.prezzo||'—')}</span></div><div class="mu">${esc(s.lavoro)} · chiusa il ${ft(s.dConclusione)} · ${esc(nm(s.collab))}</div>${s.tel?`<div class="mu">Tel. ${esc(s.tel)}</div>`:''}${s.nota?`<div class="mu">${esc(s.nota)}</div>`:''}${(S.admin||s.collab===myId())?`<div class="acts"><button class="btn s" data-act="paid" data-id="${s.id}">Segna come pagato</button></div>`:''}</div>`).join(''):'<div class="empty">Nessun pagamento in sospeso 🎉</div>';
+  }else{
+    h+='<div class="card"><label style="margin:0">Nuovo collaboratore</label><div class="row" style="margin-top:6px"><input id="nn" placeholder="Nome e cognome"><button class="btn p" data-act="addc">Aggiungi</button></div><p class="mu" style="margin:8px 0 0">Poi condividi il link: ogni collaboratore, al primo accesso, sceglie il proprio nome.</p></div>';
+    const pend=S.utenti.filter(u=>!u.ok);
+    h+=pend.length?'<div class="card"><b>Accessi da approvare</b>'+pend.map(u=>`<div class="row" style="margin-top:8px"><span>${esc(u.email)}</span><span class="acts" style="margin:0"><button class="btn s p" data-act="appr" data-id="${u.id}">Approva</button><button class="btn s" data-act="rej" data-id="${u.id}">Rifiuta</button></span></div>`).join('')+'</div>':'';
+    h+=S.collabs.length?S.collabs.map(c=>`<div class="card row"><div><b>${esc(c.nome)}</b><div class="mu">${c.uid?'Accesso collegato':'In attesa del primo accesso'}</div></div><div class="acts" style="margin:0">${c.uid?`<button class="btn s" data-act="unlink" data-id="${c.id}">Scollega</button>`:''}<button class="btn s ${cf('rmc',c.id)?'d':''}" data-act="rmc" data-id="${c.id}">${cf('rmc',c.id)?'Conferma?':'Rimuovi'}</button></div></div>`).join(''):'<div class="empty">Nessun collaboratore.</div>';
+  }
+  $('#app').innerHTML=h;if(!S.admin&&S.tab==='mie')markSeen();
+}
+function card(s){
+  const can=S.admin||s.collab===myId();
+  let a='';
+  if(s.stato==='nuova')a+=`<button class="btn s" data-act="work" data-id="${s.id}">▶ Metti in lavorazione</button>`;
+  if(s.stato==='lavorazione')a+=`<button class="btn s" data-act="close" data-id="${s.id}">✔ Concludi</button><button class="btn s" data-act="back" data-to="nuova" data-id="${s.id}">↩ Rimetti in attesa</button>`;
+  if(s.stato==='conclusa')a+=`<button class="btn s" data-act="back" data-to="lavorazione" data-id="${s.id}">↩ Riapri in lavorazione</button><button class="btn s" data-act="back" data-to="nuova" data-id="${s.id}">⏸ Rimetti in attesa</button>`;
+  a+=`<button class="btn s" data-act="edit" data-id="${s.id}">Modifica</button>`;if(S.admin)a+=`${isUnp(s)?'<span class="mu" style="align-self:center">🔒 Non eliminabile: non pagata</span>':`<button class="btn s" data-act="del" data-id="${s.id}">Elimina</button>`}`;
+  if(s.eliminata)a=S.admin?`<button class="btn s" data-act="rest" data-id="${s.id}">↩ Ripristina</button><button class="btn s" data-act="del" data-id="${s.id}">Elimina definitivamente</button>`:'';
+  const lab={nuova:'Da svolgere',lavorazione:'In lavorazione',conclusa:'Conclusa'}[s.stato];
+  return `<div class="card k_${s.stato}${s.urg==='massima'&&s.stato==='nuova'?' k_urg':''}"><div class="row"><div><b>${esc(s.cliente)}</b><div class="mu">${esc(s.lavoro)}</div></div><span style="text-align:right"><span class="st u_${s.urg||'media'}">${{minima:'Urgenza minima',media:'Urgenza media',massima:'URGENZA MASSIMA'}[s.urg||'media']}</span> <span class="st ${s.stato}">${lab}</span>${isNov(s)?' <span class="st nuova">NOVITÀ</span>':''}${s.eliminata?' <span class="st u_minima">ELIMINATA</span>':''}</span></div>
+  <div class="mu" style="margin-top:6px">${s.tel?'Tel. '+esc(s.tel)+' · ':''}${esc(s.email||'')}${s.indirizzo?' · '+esc(s.indirizzo):''}</div>
+  <div class="mu">Collaboratore: <b>${esc(nm(s.collab)||'Non assegnata')}</b> · Data lavoro: ${fd(s.dLavoro)}</div>${s.contatto?`<div class="mu">Contatto: ${esc(s.contatto)}</div>`:''}
+  ${histo(s)}
+  ${s.stato==='conclusa'?`<div class="mu">Esito: <b>${esc(s.esito)}</b>${s.prezzo?' · € '+esc(s.prezzo):''}${s.pagamento?' · '+esc(s.pagamento):''} · ${s.esito==='positivo'?(s.pagato?'Pagato':'<span class="unp">NON PAGATO</span>'):''}</div>`:''}
+  ${s.nota?`<div style="margin-top:4px">${esc(s.nota)}</div>`:''}
+  ${can&&a?`<div class="acts">${a}</div>`:''}</div>`;
+}
+function openForm(s){
+  s=s||{};
+  const cs=s.contatto||'',cAlt=cs.startsWith('Altro'),cTxt=cAlt?cs.replace(/^Altro:? ?/,''):'';
+  const sel=s.lavoroVoci||(VOCI.includes(s.lavoro)?[s.lavoro]:(s.lavoro?['Altro']:[]));
+  const dett=s.lavoroDett!==undefined?s.lavoroDett:(s.lavoroVoci||VOCI.includes(s.lavoro)?'':(s.lavoro||''));
+  const ids=S.collabs.map(c=>c.id);
+  $('#dlg').innerHTML=`<h3 style="margin:0">${s.id?'Modifica':'Nuova'} scheda</h3>
+  <label>Cliente *</label><input id="f_cliente" value="${esc(s.cliente)}">
+  <label>Telefono</label><input id="f_tel" type="tel" value="${esc(s.tel)}">
+  <label>Email</label><input id="f_email" type="email" value="${esc(s.email)}">
+  <label>Indirizzo</label><input id="f_ind" value="${esc(s.indirizzo)}">
+  <label>Lavoro da svolgere *</label><div id="f_voci" class="chips">${VOCI.map(o=>`<label class="chip"><input type="checkbox" value="${o}" ${sel.includes(o)?'checked':''}>${o}</label>`).join('')}</div>
+  <div id="f_q" style="display:${dett?'none':''}"><label>Hai da aggiungere altro?</label><div class="acts" style="margin-top:4px"><button type="button" class="btn s" data-act="alt" data-id="si">Sì</button><button type="button" class="btn s" data-act="alt" data-id="no">No</button></div></div>
+  <div id="f_dw" style="display:${dett?'block':'none'};margin-top:6px"><input id="f_dett" placeholder="Continua qui con maggiori informazioni…" value="${esc(dett)}"></div>
+  <button type="button" class="btn s" id="f_re" style="display:none;margin-top:6px" data-act="alt" data-id="ask">＋ Aggiungi info</button>
+  <input type="hidden" id="f_alt" value="${dett?'si':'no'}">
+  <label>Data del lavoro</label><input id="f_dl" type="date" value="${esc(s.dLavoro||today())}">
+  <label style="color:var(--er);font-weight:700">Urgenza</label><select id="f_urg">${[['minima','Minima'],['media','Media'],['massima','Massima']].map(o=>`<option value="${o[0]}" ${(s.urg||'media')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+  <label>Come è avvenuto il contatto</label><select id="f_cont">${['Venuto in sede','Ha chiamato','È stato chiamato','Altro'].map(o=>`<option ${(o==='Altro'?cAlt:s.contatto===o)?'selected':''}>${o}</option>`).join('')}</select>
+  <div id="f_cw" style="display:${cAlt?'block':'none'};margin-top:6px"><input id="f_cont2" placeholder="Specifica come è avvenuto il contatto…" value="${esc(cTxt)}"></div>
+  <label>Collaboratore</label><select id="f_collab">${S.admin?'<option value="">— scegli —</option>':''}${!s.id?'<option value="*">👥 Per tutti</option>':''}${ids.map(i=>`<option value="${esc(i)}" ${(s.collab||(S.folder&&S.folder!=='?'?S.folder:myId()))===i?'selected':''}>${esc(nm(i))}${i===myId()?' (io)':''}</option>`).join('')}</select>
+  <label>Nota</label><textarea id="f_nota" rows="2">${esc(s.nota)}</textarea>
+  ${s.stato==='conclusa'?`<label>Esito</label><select id="f_esito"><option value="positivo" ${s.esito!=='negativo'?'selected':''}>Positivo</option><option value="negativo" ${s.esito==='negativo'?'selected':''}>Negativo</option></select><label>Prezzo (€)</label><input id="f_prezzo" type="number" step="0.01" value="${esc(s.prezzo)}"><label>Modalità di pagamento</label><select id="f_pag">${['Contanti','Bonifico','Carta / POS','Assegno','Credito','Altro'].map(o=>`<option ${s.pagamento===o?'selected':''}>${o}</option>`).join('')}</select><label><input type="checkbox" id="f_pagato" ${s.pagato?'checked':''}> Il cliente ha già pagato</label>`:''}
+  <div class="acts" style="margin-top:14px"><button class="btn p" data-act="save" data-id="${s.id||''}">Salva</button><button class="btn" data-act="x">Annulla</button></div>`;
+  $('#dlg').showModal();
+  $('#f_cont').onchange=()=>{$('#f_cw').style.display=$('#f_cont').value==='Altro'?'block':'none'};
+  document.querySelectorAll('#f_voci input').forEach(i=>i.onchange=()=>{if(i.value==='Altro'&&i.checked){setAlt('si')}});
+}
+function openClose(s){
+  $('#dlg').innerHTML=`<h3 style="margin:0">Concludi: ${esc(s.cliente)}</h3>
+  <label>Esito</label><select id="c_esito"><option value="positivo">Positivo</option><option value="negativo">Negativo</option></select>
+  <label>Prezzo (€)</label><input id="c_prezzo" type="number" step="0.01" inputmode="decimal">
+  <label>Modalità di pagamento</label><select id="c_pag"><option>Contanti</option><option>Bonifico</option><option>Carta / POS</option><option>Assegno</option><option>Credito</option><option>Altro</option></select>
+  <label><input type="checkbox" id="c_pagato"> Il cliente ha già pagato</label>
+  <label>Relazione di chiusura</label><textarea id="c_nota" rows="3">${esc(s.nota)}</textarea>
+  <div class="acts" style="margin-top:14px"><button class="btn p" data-act="doclose" data-id="${s.id}">Conferma</button><button class="btn" data-act="x">Annulla</button></div>`;
+  $('#dlg').showModal();
+}
+const VOCI=['Consulenza pos','Consulenza energetica','Consulenza Telefonica','Consulenza informatica','Consulenza casse','Firma Digitale','Spid','PEC','Assistenza','Altro'];
+const TIPI=['Consulenza pos','Consulenza energetica','Consulenza Telefonica','Consulenza informatica','Consulenza casse','Firma Digitale','Spid','PEC','Assistenza','Altro'];
+const inT=(s,t)=>s.lavoroVoci?s.lavoroVoci.includes(t):(s.lavoro===t||(t==='Altro'&&!VOCI.includes(s.lavoro)));
+const isNov=s=>s.stato==='nuova'&&!s.eliminata&&s.collab!=='admin'&&(!s.visto||(S.fresh&&S.fresh.has(s.id)));
+const marking=new Set();
+function markSeen(){const l=mine().filter(s=>s.stato==='nuova'&&!s.visto&&!marking.has(s.id));if(!l.length)return;S.fresh=S.fresh||new Set();
+  l.forEach(s=>{S.fresh.add(s.id);marking.add(s.id);db.collection('schede').doc(s.id).update({visto:true}).catch(()=>marking.delete(s.id))})}
+const PW_TEAM='333';
+let gateOK=false;try{gateOK=localStorage.getItem('gate')==='1'}catch(e){}
+function showGate(msg){$('#app').innerHTML=`<div class="card"><img class="lg lg-c" src="${LOGO}" alt=""><b>Password di accesso</b><label>Password</label><input id="g_pw" type="password" inputmode="numeric" autocomplete="off"><div style="margin-top:6px;color:var(--er)">${esc(msg||'')}</div><div class="acts" style="margin-top:10px"><button class="btn p" id="g_ok">Entra</button></div></div>`;
+  $('#g_ok').onclick=()=>{if($('#g_pw').value.trim()===PW_TEAM){gateOK=true;try{localStorage.setItem('gate','1')}catch(e){}render()}else showGate('Password errata')}}
+function closeFields(){if(!$('#f_esito'))return{};const pos=v('f_esito')==='positivo';return{esito:v('f_esito'),prezzo:v('f_prezzo'),pagamento:v('f_pag'),pagato:pos?$('#f_pagato').checked:true}}
+const visAll=()=>S.admin?S.schede:S.schede.filter(s=>s.collab===myId());
+function tfList(){const dk=S.dk||'dLavoro',d1=S.d1||'',d2=S.d2||'';const dv=s=>dk==='creata'?(s.creata||'').slice(0,10):(s.dLavoro||'');
+  return visAll().filter(s=>inT(s,S.tf)).filter(s=>(!d1||dv(s)>=d1)&&(!d2||dv(s)<=d2)).sort((a,b)=>(b.creata||'').localeCompare(a.creata||''))}
+const COLS=['Cliente','Telefono','Email','Indirizzo','Lavoro','Urgenza','Contatto','Collaboratore','Stato','Data lavoro','Creata','In lavorazione','Conclusa','Esito','Prezzo','Pagamento','Pagato','Nota','Eliminata dalla cartella','Cronologia'];
+const csvEsc=v=>{v=String(v==null?'':v);return /[";\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+async function saveFile(name,text){
+  const b=new Blob([text],{type:'text/csv;charset=utf-8'});
+  try{if(typeof claude!=='undefined'&&claude.use){const dl=await claude.use('downloads');if(dl){await dl.save({filename:name,data:b});return}}}catch(e){if(e&&e.code==='declined')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();
+}
+function exportCsv(l){
+  if(!l.length){toast('Niente da esportare');return}
+  const st={nuova:'Da svolgere',lavorazione:'In lavorazione',conclusa:'Conclusa'};
+  const rows=l.map(s=>[s.cliente,s.tel,s.email,s.indirizzo,s.lavoro,s.urg||'media',s.contatto,nm(s.collab)||'',st[s.stato],s.dLavoro,ft(s.creata),ft(s.dLavorazione),ft(s.dConclusione),s.esito,s.prezzo,s.pagamento,s.stato==='conclusa'&&s.esito==='positivo'?(s.pagato?'Sì':'No'):'',s.nota,s.eliminata?'Sì':'',(s.storico||[]).map(x=>ft(x.ts)+' '+x.ev).join(' | ')]);
+  saveFile('crm-rescina-'+today()+'.csv','\ufeff'+[COLS,...rows].map(r=>r.map(csvEsc).join(';')).join('\r\n'));
+}
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='fd1'){S.d1=t.value;render()}else if(t.id==='fd2'){S.d2=t.value;render()}else if(t.id==='fdk'){S.dk=t.value;render()}});
+const novB=()=>mine().some(isNov)?'<span class="nov">NOVITÀ</span>':'';
+function folderBody(l){const ur=l.filter(s=>s.urg==='massima'&&s.stato==='nuova'),op=l.filter(s=>s.stato!=='conclusa'&&!(s.urg==='massima'&&s.stato==='nuova')),dn=l.filter(s=>s.stato==='conclusa');let h='';
+  if(ur.length)h+='<div class="mu" style="margin:6px 0 8px"><b style="color:var(--er)">🔴 Urgenti ('+ur.length+')</b></div>'+ur.map(card).join('');
+  if(op.length)h+='<div class="mu" style="margin:6px 0 8px"><b style="color:var(--bl)">In corso ('+op.length+')</b></div>'+op.map(card).join('');
+  if(dn.length)h+='<div class="mu" style="margin:14px 0 8px"><b style="color:var(--ac)">✔ Concluse ('+dn.length+')</b></div>'+dn.map(card).join('');return h}
+const cnt=(n,c)=>`<b style="color:${n?c:'var(--tx)'}">${n}</b>`;
+function setAlt(m){$('#f_alt').value=m==='ask'?'no':m;$('#f_q').style.display=m==='ask'?'':'none';$('#f_dw').style.display=m==='si'?'block':'none';$('#f_re').style.display=m==='no'?'inline-block':'none';
+  if(m==='no')$('#f_dett').value='';if(m==='si')$('#f_dett').focus()}
+function getLav(){const voci=[...document.querySelectorAll('#f_voci input:checked')].map(i=>i.value);const dett=$('#f_alt').value==='si'?v('f_dett'):'';
+  return{lavoro:voci.join(', ')+(dett?(voci.length?' — ':'')+dett:''),lavoroVoci:voci,lavoroDett:dett}}
+function openDel(id){const s=get(id);$('#dlg').innerHTML=`<h3 style="margin:0">${s&&s.eliminata?'Elimina definitivamente':'Elimina scheda'}</h3><p class="mu">${esc(s?s.cliente:'')}</p><p class="mu">${s&&s.eliminata?'La scheda sarà cancellata anche da Per tipo.':'Sarà tolta dalla cartella del collaboratore ma resterà in Per tipo.'}</p><label>Password</label><input id="d_pw" type="password" inputmode="numeric" autocomplete="off"><div class="acts" style="margin-top:14px"><button class="btn d" data-act="delok" data-id="${id}">Elimina</button><button class="btn" data-act="x">Annulla</button></div>`;$('#dlg').showModal()}
+const get=id=>S.schede.find(s=>s.id===id);
+const v=id=>$('#'+id).value.trim();
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-tab],[data-act]');if(!t)return;
+  if(t.dataset.tab){S.tab=t.dataset.tab;S.fresh=null;render();return}
+  const a=t.dataset.act,id=t.dataset.id;if(pend&&pend!==a+id){pend='';render()}
+  try{
+  if(a==='x')$('#dlg').close();
+  else if(a==='new')openForm();
+  else if(a==='back'){const to=t.dataset.to;await db.collection('schede').doc(id).update({stato:to,dConclusione:'',...(to==='nuova'?{dLavorazione:''}:{}),storico:hist(id,to==='nuova'?'Rimessa in attesa':'Riaperta in lavorazione')})}
+  else if(a==='appr')await updateDoc(doc(fs,'utenti',id),{ok:true});
+  else if(a==='rej')await deleteDoc(doc(fs,'utenti',id));
+  else if(a==='alt')setAlt(id);
+  else if(a==='open'){S.folder=id||null;render()}
+  else if(a==='opent'){S.tf=id||null;render()}
+  else if(a==='adm')openAdm();
+  else if(a==='admok')adminLogin();
+  else if(a==='fclr'){S.d1='';S.d2='';S.dk='dLavoro';render()}
+  else if(a==='exp')exportCsv(id==='tf'?tfList():visAll());
+  else if(a==='rest')await db.collection('schede').doc(id).update({eliminata:false,storico:hist(id,'Ripristinata')});
+  else if(a==='edit')openForm(get(id));
+  else if(a==='save'){
+    const d={cliente:v('f_cliente'),tel:v('f_tel'),email:v('f_email'),indirizzo:v('f_ind'),...getLav(),dLavoro:v('f_dl'),collab:v('f_collab'),urg:v('f_urg'),contatto:(v('f_cont')==='Altro'?'Altro'+(v('f_cont2')?': '+v('f_cont2'):''):v('f_cont')),nota:v('f_nota')};Object.assign(d,closeFields());
+    if(!d.cliente||!d.lavoro||(!id&&!d.collab)){toast('Cliente, lavoro e collaboratore sono obbligatori');return}
+    if(id)await db.collection('schede').doc(id).update({...d,storico:hist(id,'Modificata')});
+    else{const t=now();const tg=d.collab==='*'?S.collabs.map(c=>c.id):[d.collab];if(!tg.length){toast('Nessun collaboratore: aggiungine uno');return}for(const c of tg)await db.collection('schede').add({...d,collab:c,stato:'nuova',creata:t,creatoDa:S.me,pagato:false,storico:[{ev:'Creata',ts:t,by:myId()}]});if(tg.length>1)toast('Create '+tg.length+' schede, una per collaboratore')}
+    $('#dlg').close();
+    if(d.collab!=='*'&&d.collab!==myId())toast('Scheda assegnata a '+nm(d.collab));
+  }
+  else if(a==='work')await db.collection('schede').doc(id).update({stato:'lavorazione',dLavorazione:now(),storico:hist(id,'Messa in lavorazione')});
+  else if(a==='close')openClose(get(id));
+  else if(a==='doclose'){
+    const pos=v('c_esito')==='positivo';
+    await db.collection('schede').doc(id).update({stato:'conclusa',dConclusione:now(),storico:hist(id,'Conclusa – esito '+v('c_esito')),esito:v('c_esito'),prezzo:v('c_prezzo'),pagamento:v('c_pag'),pagato:pos?$('#c_pagato').checked:true,nota:v('c_nota')});
+    $('#dlg').close();
+  }
+  else if(a==='paid')await db.collection('schede').doc(id).update({pagato:true,dPagamento:now(),storico:hist(id,'Pagamento ricevuto')});
+  else if(a==='del'){if(isUnp(get(id))){toast('Scheda non pagata: non si può eliminare');return}openDel(id)}
+  else if(a==='delok'){if(isUnp(get(id))){toast('Scheda non pagata: non si può eliminare');return}if(v('d_pw')!=='555'){toast('Password errata');return}const sc=get(id);if(sc&&sc.eliminata)await db.collection('schede').doc(id).delete();else await db.collection('schede').doc(id).update({eliminata:true,dEliminata:now(),storico:hist(id,'Eliminata dalla cartella del collaboratore')});$('#dlg').close();toast(sc&&sc.eliminata?'Scheda eliminata definitivamente':'Tolta dalla cartella, resta in Per tipo')}
+  else if(a==='addc'){const n=v('nn');if(!n)return;await db.collection('collab').add({nome:n,uid:''})}
+  else if(a==='claim'){await db.collection('collab').doc(id).update({uid:S.me})}
+  else if(a==='unlink'){await db.collection('collab').doc(id).update({uid:''})}
+  else if(a==='rmc'){if(!cf(a,id)){pend=a+id;render();return}pend='';await db.collection('collab').doc(id).delete();toast('Collaboratore rimosso')}
+  }catch(err){toast('Operazione non riuscita: '+(err.message||err.code||err))}
+});
+const NOCFG=firebaseConfig.apiKey==="INCOLLA";
+let unsubs=[];
+try{let d=localStorage.getItem('did');if(!d){d=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('did',d)}S.me=d;S.admin=localStorage.getItem('adm')==='1'}catch(e){S.me='tmp'+Math.random().toString(36).slice(2)}
+const pe=e=>{$('#app').innerHTML='<div class="empty">Errore: '+esc(e.code||e.message)+'<br>Controlla le regole di Firestore.</div>'};
+function openAdm(){$('#dlg').innerHTML='<h3 style="margin:0">Accesso amministratore</h3><label>Codice</label><input id="a_pw" type="password" autocomplete="off"><div class="acts" style="margin-top:14px"><button class="btn p" data-act="admok">Entra</button><button class="btn" data-act="x">Annulla</button></div>';$('#dlg').showModal()}
+function adminLogin(){if(v('a_pw')!==ADMIN_CODE){toast('Codice errato');return}try{localStorage.setItem('adm','1')}catch(e){}S.admin=true;$('#dlg').close();render()}
+function start(){
+  unsubs.push(onSnapshot(collection(fs,'collab'),sn=>{S.collabs=sn.docs.map(d=>({id:d.id,...d.data()}));render()},pe));
+  unsubs.push(onSnapshot(collection(fs,'schede'),sn=>{S.schede=sn.docs.map(d=>({id:d.id,...d.data()}));checkUrgent();render()},pe));
+  render();
+}
+if(NOCFG){
+  $('#app').innerHTML='<div class="card"><b>Configurazione mancante</b><p class="mu">Apri il file e inserisci i dati di Firebase nella parte "DA COMPILARE".</p></div>';
+}else{
+  const app=initializeApp(firebaseConfig);fs=getFirestore(app);
+  db={collection:n=>({add:d=>addDoc(collection(fs,n),d),doc:id=>({update:d=>updateDoc(doc(fs,n,id),d),set:d=>setDoc(doc(fs,n,id),d),delete:()=>deleteDoc(doc(fs,n,id))})})};
+  $('#out').onclick=async()=>{try{localStorage.removeItem('adm');localStorage.removeItem('gate')}catch(e){}gateOK=false;S.admin=false;const c=myC();if(c){try{await db.collection('collab').doc(c.id).update({uid:''})}catch(e){}}render()};
+  start();
+}
+</script></body></html>
