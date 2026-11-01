@@ -107,15 +107,15 @@ function render(){
   let h='<div class="tabs">'+tabs.map(t=>`<button class="tab ${S.tab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')+'</div>';
   if(S.tab!=='team')h+='<div class="acts" style="margin:0 0 12px"><button class="btn p" data-act="new">+ Nuova scheda</button><button class="btn" data-act="exp" data-id="all">⬇ Esporta tutto</button></div>';
   if(S.tab==='mie'){
-    const list=f=>S.schede.filter(s=>!s.eliminata&&(f==='?'?!S.collabs.some(c=>c.id===s.collab):s.collab===f)).sort((a,b)=>(b.creata||'').localeCompare(a.creata||''));
+    const list=f=>S.schede.filter(s=>!s.eliminata&&s.stato!=='conclusa'&&(f==='?'?!S.collabs.some(c=>c.id===s.collab):s.collab===f)).sort((a,b)=>(b.creata||'').localeCompare(a.creata||''));
     const F=S.admin?S.folder:myId();
     const fn=f=>f==='?'?'Non assegnate':nm(f);
     if(!F){
       const fl=S.collabs.map(c=>c.id);if(list('?').length)fl.push('?');
-      h+=fl.map(f=>{const l=list(f);const w=l.filter(s=>s.stato==='lavorazione').length;return `<button class="card fold" data-act="open" data-id="${f}"><div class="row"><b>📁 ${esc(fn(f))}${l.some(isNov)?' <span class="nov">NOVITÀ</span>':''}</b><span class="mu">${cnt(l.filter(s=>s.stato==='nuova').length,'var(--er)')} da svolgere · ${cnt(w,'var(--bl)')} in lavorazione · ${cnt(l.filter(s=>s.stato==='conclusa').length,'var(--ac)')} concluse${l.some(s=>s.urg==='massima'&&s.stato==='nuova')?' · 🔴 '+l.filter(s=>s.urg==='massima'&&s.stato==='nuova').length:''}</span></div></button>`}).join('');
+      h+=fl.map(f=>{const l=list(f);const w=l.filter(s=>s.stato==='lavorazione').length;return `<button class="card fold" data-act="open" data-id="${f}"><div class="row"><b>📁 ${esc(fn(f))}${l.some(isNov)?' <span class="nov">NOVITÀ</span>':''}</b><span class="mu">${cnt(l.filter(s=>s.stato==='nuova').length,'var(--er)')} da svolgere · ${cnt(w,'var(--bl)')} in lavorazione${l.some(s=>s.urg==='massima'&&s.stato==='nuova')?' · 🔴 '+l.filter(s=>s.urg==='massima'&&s.stato==='nuova').length:''}</span></div></button>`}).join('');
     }else{
       const l=list(F);
-      h+=`<div class="row" style="margin-bottom:10px"><b>📁 ${esc(fn(F))}</b>${S.admin?'<button class="btn s" data-act="open" data-id="">← Cartelle</button>':''}</div>`;
+      h+=`<div class="row" style="margin-bottom:10px"><b>📁 ${esc(fn(F))}</b>${S.admin?'<button class="btn s" data-act="open" data-id="">← Cartelle</button>':''}</div><div class="mu" style="margin-bottom:8px">I lavori conclusi passano nella scheda "Per tipo".</div>`;
       const ur=l.filter(s=>s.urg==='massima'&&s.stato==='nuova'),op=l.filter(s=>s.stato!=='conclusa'&&!(s.urg==='massima'&&s.stato==='nuova')),dn=l.filter(s=>s.stato==='conclusa');
       if(!l.length)h+='<div class="empty">Cartella vuota.</div>';
       if(ur.length)h+='<div class="mu" style="margin:6px 0 8px"><b style="color:var(--er)">🔴 Urgenti ('+ur.length+')</b></div>'+ur.map(card).join('');
@@ -143,10 +143,10 @@ function render(){
     h+='<p class="mu">Elenco condiviso con tutti: clienti che non hanno ancora pagato.</p>';
     h+=l.length?l.map(s=>`<div class="card"><div class="row"><b>${esc(s.cliente)}</b><span class="unp">€ ${esc(s.prezzo||'—')}</span></div><div class="mu">${esc(s.lavoro)} · chiusa il ${ft(s.dConclusione)} · ${esc(nm(s.collab))}</div>${s.tel?`<div class="mu">Tel. ${esc(s.tel)}</div>`:''}${s.nota?`<div class="mu">${esc(s.nota)}</div>`:''}${(S.admin||s.collab===myId())?`<div class="acts"><button class="btn s" data-act="paid" data-id="${s.id}">Segna come pagato</button></div>`:''}</div>`).join(''):'<div class="empty">Nessun pagamento in sospeso 🎉</div>';
   }else{
-    h+='<div class="card"><label style="margin:0">Nuovo collaboratore</label><div class="row" style="margin-top:6px"><input id="nn" placeholder="Nome e cognome"><button class="btn p" data-act="addc">Aggiungi</button></div><p class="mu" style="margin:8px 0 0">Poi condividi il link: ogni collaboratore, al primo accesso, sceglie il proprio nome.</p></div>';
+    h+='<div class="card"><label style="margin:0">Nuovo collaboratore</label><div style="margin-top:6px"><input id="nn" placeholder="Nome e cognome"><input id="nt" type="tel" placeholder="Telefono WhatsApp, es. 3331234567" style="margin-top:6px"><button class="btn p" style="margin-top:8px" data-act="addc">Aggiungi</button></div><p class="mu" style="margin:8px 0 0">Poi condividi il link: ogni collaboratore, al primo accesso, sceglie il proprio nome.</p></div>';
     const pend=S.utenti.filter(u=>!u.ok);
     h+=pend.length?'<div class="card"><b>Accessi da approvare</b>'+pend.map(u=>`<div class="row" style="margin-top:8px"><span>${esc(u.email)}</span><span class="acts" style="margin:0"><button class="btn s p" data-act="appr" data-id="${u.id}">Approva</button><button class="btn s" data-act="rej" data-id="${u.id}">Rifiuta</button></span></div>`).join('')+'</div>':'';
-    h+=S.collabs.length?S.collabs.map(c=>`<div class="card row"><div><b>${esc(c.nome)}</b><div class="mu">${c.uid?'Accesso collegato':'In attesa del primo accesso'}</div></div><div class="acts" style="margin:0">${c.uid?`<button class="btn s" data-act="unlink" data-id="${c.id}">Scollega</button>`:''}<button class="btn s ${cf('rmc',c.id)?'d':''}" data-act="rmc" data-id="${c.id}">${cf('rmc',c.id)?'Conferma?':'Rimuovi'}</button></div></div>`).join(''):'<div class="empty">Nessun collaboratore.</div>';
+    h+=S.collabs.length?S.collabs.map(c=>`<div class="card row"><div><b>${esc(c.nome)}</b><div class="mu">${c.uid?'Accesso collegato':'In attesa del primo accesso'}</div><div class="mu">📞 ${c.tel?esc(c.tel):'numero non inserito'}</div></div><div class="acts" style="margin:0"><button class="btn s" data-act="ctel" data-id="${c.id}">📞 Numero</button>${c.uid?`<button class="btn s" data-act="unlink" data-id="${c.id}">Scollega</button>`:''}<button class="btn s ${cf('rmc',c.id)?'d':''}" data-act="rmc" data-id="${c.id}">${cf('rmc',c.id)?'Conferma?':'Rimuovi'}</button></div></div>`).join(''):'<div class="empty">Nessun collaboratore.</div>';
   }
   $('#app').innerHTML=h;if(!S.admin&&S.tab==='mie')markSeen();
 }
@@ -157,6 +157,7 @@ function card(s){
   if(s.stato==='lavorazione')a+=`<button class="btn s" data-act="close" data-id="${s.id}">✔ Concludi</button><button class="btn s" data-act="back" data-to="nuova" data-id="${s.id}">↩ Rimetti in attesa</button>`;
   if(s.stato==='conclusa')a+=`<button class="btn s" data-act="back" data-to="lavorazione" data-id="${s.id}">↩ Riapri in lavorazione</button><button class="btn s" data-act="back" data-to="nuova" data-id="${s.id}">⏸ Rimetti in attesa</button>`;
   a+=`<button class="btn s" data-act="edit" data-id="${s.id}">Modifica</button>`;if(S.admin)a+=`${isUnp(s)?'<span class="mu" style="align-self:center">🔒 Non eliminabile: non pagata</span>':`<button class="btn s" data-act="del" data-id="${s.id}">Elimina</button>`}`;
+  if(waNum(s.tel))a+=`<a class="btn s" style="text-decoration:none" target="_blank" rel="noopener" href="${waCliUrl(s)}">💬 Avvisa il cliente</a>`;
   if(s.eliminata)a=S.admin?`<button class="btn s" data-act="rest" data-id="${s.id}">↩ Ripristina</button><button class="btn s" data-act="del" data-id="${s.id}">Elimina definitivamente</button>`:'';
   const lab={nuova:'Da svolgere',lavorazione:'In lavorazione',conclusa:'Conclusa'}[s.stato];
   return `<div class="card k_${s.stato}${s.urg==='massima'&&s.stato==='nuova'?' k_urg':''}"><div class="row"><div><b>${esc(s.cliente)}</b><div class="mu">${esc(s.lavoro)}</div></div><span style="text-align:right"><span class="st u_${s.urg||'media'}">${{minima:'Urgenza minima',media:'Urgenza media',massima:'URGENZA MASSIMA'}[s.urg||'media']}</span> <span class="st ${s.stato}">${lab}</span>${isNov(s)?' <span class="st nuova">NOVITÀ</span>':''}${s.eliminata?' <span class="st u_minima">ELIMINATA</span>':''}</span></div>
@@ -217,6 +218,27 @@ let gateOK=false;try{gateOK=localStorage.getItem('gate')==='1'}catch(e){}
 function showGate(msg){$('#app').innerHTML=`<div class="card"><img class="lg lg-c" src="${LOGO}" alt=""><b>Password di accesso</b><label>Password</label><input id="g_pw" type="password" inputmode="numeric" autocomplete="off"><div style="margin-top:6px;color:var(--er)">${esc(msg||'')}</div><div class="acts" style="margin-top:10px"><button class="btn p" id="g_ok">Entra</button></div></div>`;
   $('#g_ok').onclick=()=>{if($('#g_pw').value.trim()===PW_TEAM){gateOK=true;try{localStorage.setItem('gate','1')}catch(e){}render()}else showGate('Password errata')}}
 function closeFields(){if(!$('#f_esito'))return{};const pos=v('f_esito')==='positivo';return{esito:v('f_esito'),prezzo:v('f_prezzo'),pagamento:v('f_pag'),pagato:pos?$('#f_pagato').checked:true}}
+function waNum(t){let d=String(t||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);else if(d.length===10&&d[0]==='3')d='39'+d;return d}
+function waMsg(d){const u={minima:'minima',media:'media',massima:'MASSIMA'}[d.urg||'media'];
+  const L=['*Nuova scheda di lavorazione*','Cliente: '+d.cliente];
+  if(d.tel)L.push('Telefono: '+d.tel);
+  if(d.email)L.push('Email: '+d.email);
+  if(d.indirizzo)L.push('Indirizzo: '+d.indirizzo);
+  L.push('Lavoro: '+d.lavoro,'Data del lavoro: '+fd(d.dLavoro),'Urgenza: '+u);
+  if(d.contatto)L.push('Contatto: '+d.contatto);
+  if(d.nota)L.push('Nota: '+d.nota);
+  return L.join('\n')}
+const waCliUrl=s=>{const n=waNum(s.tel);return n?'https://wa.me/'+n+'?text='+encodeURIComponent('Buongiorno '+s.cliente+', abbiamo preso in carico la sua gentile richiesta ('+s.lavoro+'). Rescina Service'):''};
+function openWaCli(){
+  $('#dlg').innerHTML=`<h3 style="margin:0">Scheda creata ✔</h3><p class="mu">Passo 1: vuoi avvisare il cliente?</p><a class="btn p" data-act="wacli" style="display:block;text-align:center;text-decoration:none;margin-top:8px" target="_blank" rel="noopener" href="${S.waCli}">💬 Avvisa il cliente: richiesta presa in carico</a><div class="acts" style="margin-top:14px"><button class="btn" data-act="wanext">${(S.waList&&S.waList.length)?'Salta e vai al collaboratore →':'Chiudi'}</button></div>`;
+  $('#dlg').showModal()}
+function waNext(){S.waCli='';if(S.waList&&S.waList.length)openWa();else $('#dlg').close()}
+function openWa(){const l=S.waList||[];S.waList=null;
+  $('#dlg').innerHTML='<h3 style="margin:0">Avvisa il collaboratore</h3><p class="mu">Vuoi avvisarlo su WhatsApp?</p>'+l.map(x=>{const c=S.collabs.find(k=>k.id===x.id)||{};const n=waNum(c.tel);return n?`<a class="btn p" style="display:block;text-align:center;text-decoration:none;margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/${n}?text=${encodeURIComponent(x.msg)}">💬 Avvisa ${esc(c.nome||'')}</a>`:`<div class="mu" style="margin-top:8px">${esc(c.nome||'Collaboratore')}: numero non inserito</div>`}).join('')+'<div class="acts" style="margin-top:14px"><button class="btn" data-act="x">Chiudi</button></div>';
+  $('#dlg').showModal()}
+function openTel(id){const c=S.collabs.find(k=>k.id===id)||{};
+  $('#dlg').innerHTML=`<h3 style="margin:0">Numero WhatsApp</h3><p class="mu">${esc(c.nome||'')}</p><label>Telefono</label><input id="t_n" type="tel" value="${esc(c.tel||'')}" placeholder="3331234567"><div class="acts" style="margin-top:14px"><button class="btn p" data-act="ctelok" data-id="${id}">Salva</button><button class="btn" data-act="x">Annulla</button></div>`;
+  $('#dlg').showModal()}
 const visAll=()=>S.admin?S.schede:S.schede.filter(s=>s.collab===myId());
 function tfList(){const dk=S.dk||'dLavoro',d1=S.d1||'',d2=S.d2||'';const dv=s=>dk==='creata'?(s.creata||'').slice(0,10):(s.dLavoro||'');
   return visAll().filter(s=>inT(s,S.tf)).filter(s=>(!d1||dv(s)>=d1)&&(!d2||dv(s)<=d2)).sort((a,b)=>(b.creata||'').localeCompare(a.creata||''))}
@@ -254,6 +276,10 @@ document.addEventListener('click',async e=>{
   try{
   if(a==='x')$('#dlg').close();
   else if(a==='new')openForm();
+  else if(a==='wacli')setTimeout(waNext,400);
+  else if(a==='wanext')waNext();
+  else if(a==='ctel')openTel(id);
+  else if(a==='ctelok'){await db.collection('collab').doc(id).update({tel:v('t_n')});$('#dlg').close()}
   else if(a==='back'){const to=t.dataset.to;await db.collection('schede').doc(id).update({stato:to,dConclusione:'',...(to==='nuova'?{dLavorazione:''}:{}),storico:hist(id,to==='nuova'?'Rimessa in attesa':'Riaperta in lavorazione')})}
   else if(a==='appr')await updateDoc(doc(fs,'utenti',id),{ok:true});
   else if(a==='rej')await deleteDoc(doc(fs,'utenti',id));
@@ -269,10 +295,10 @@ document.addEventListener('click',async e=>{
   else if(a==='save'){
     const d={cliente:v('f_cliente'),tel:v('f_tel'),email:v('f_email'),indirizzo:v('f_ind'),...getLav(),dLavoro:v('f_dl'),collab:v('f_collab'),urg:v('f_urg'),contatto:(v('f_cont')==='Altro'?'Altro'+(v('f_cont2')?': '+v('f_cont2'):''):v('f_cont')),nota:v('f_nota')};Object.assign(d,closeFields());
     if(!d.cliente||!d.lavoro||(!id&&!d.collab)){toast('Cliente, lavoro e collaboratore sono obbligatori');return}
-    if(id)await db.collection('schede').doc(id).update({...d,storico:hist(id,'Modificata')});
-    else{const t=now();const tg=d.collab==='*'?S.collabs.map(c=>c.id):[d.collab];if(!tg.length){toast('Nessun collaboratore: aggiungine uno');return}for(const c of tg)await db.collection('schede').add({...d,collab:c,stato:'nuova',creata:t,creatoDa:S.me,pagato:false,storico:[{ev:'Creata',ts:t,by:myId()}]});if(tg.length>1)toast('Create '+tg.length+' schede, una per collaboratore')}
+    S.waList=null;S.waCli='';if(id)await db.collection('schede').doc(id).update({...d,storico:hist(id,'Modificata')});
+    else{const t=now();const tg=d.collab==='*'?S.collabs.map(c=>c.id):[d.collab];if(!tg.length){toast('Nessun collaboratore: aggiungine uno');return}for(const c of tg)await db.collection('schede').add({...d,collab:c,stato:'nuova',creata:t,creatoDa:S.me,pagato:false,storico:[{ev:'Creata',ts:t,by:myId()}]});S.waCli=waCliUrl(d);S.waList=tg.filter(c=>c!==myId()).map(c=>({id:c,msg:waMsg(d)}));if(tg.length>1)toast('Create '+tg.length+' schede, una per collaboratore')}
     $('#dlg').close();
-    if(d.collab!=='*'&&d.collab!==myId())toast('Scheda assegnata a '+nm(d.collab));
+    if(S.waCli)openWaCli();else if(S.waList&&S.waList.length)openWa();else if(d.collab!=='*'&&d.collab!==myId())toast('Scheda assegnata a '+nm(d.collab));
   }
   else if(a==='work')await db.collection('schede').doc(id).update({stato:'lavorazione',dLavorazione:now(),storico:hist(id,'Messa in lavorazione')});
   else if(a==='close')openClose(get(id));
@@ -284,7 +310,7 @@ document.addEventListener('click',async e=>{
   else if(a==='paid')await db.collection('schede').doc(id).update({pagato:true,dPagamento:now(),storico:hist(id,'Pagamento ricevuto')});
   else if(a==='del'){if(isUnp(get(id))){toast('Scheda non pagata: non si può eliminare');return}openDel(id)}
   else if(a==='delok'){if(isUnp(get(id))){toast('Scheda non pagata: non si può eliminare');return}if(v('d_pw')!=='555'){toast('Password errata');return}const sc=get(id);if(sc&&sc.eliminata)await db.collection('schede').doc(id).delete();else await db.collection('schede').doc(id).update({eliminata:true,dEliminata:now(),storico:hist(id,'Eliminata dalla cartella del collaboratore')});$('#dlg').close();toast(sc&&sc.eliminata?'Scheda eliminata definitivamente':'Tolta dalla cartella, resta in Per tipo')}
-  else if(a==='addc'){const n=v('nn');if(!n)return;await db.collection('collab').add({nome:n,uid:''})}
+  else if(a==='addc'){const n=v('nn');if(!n)return;await db.collection('collab').add({nome:n,uid:'',tel:($('#nt')?v('nt'):'')})}
   else if(a==='claim'){await db.collection('collab').doc(id).update({uid:S.me})}
   else if(a==='unlink'){await db.collection('collab').doc(id).update({uid:''})}
   else if(a==='rmc'){if(!cf(a,id)){pend=a+id;render();return}pend='';await db.collection('collab').doc(id).delete();toast('Collaboratore rimosso')}
